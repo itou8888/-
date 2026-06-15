@@ -68,7 +68,7 @@
         .btn-remove { background-color: #6c757d; }
         .btn-remove:hover { background-color: #5a6268; }
 
-        /* ★列数切り替えパネル */
+        /* 列数切り替えパネル */
         .layout-selector {
             display: flex;
             gap: 10px;
@@ -109,10 +109,6 @@
             border: 2px dashed #ccc;
             border-radius: 8px;
             background-color: #fafafa;
-        }
-        .form-group:focus-within {
-            border-color: #007bff;
-            background-color: #f0f7ff;
         }
         label {
             display: block;
@@ -155,7 +151,7 @@
             resize: vertical;
         }
         
-        /* 画像4枚用の入力グリッド */
+        /* 画像入力グリッド */
         .sub-image-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -167,29 +163,14 @@
             background: #fff;
             border-radius: 4px;
         }
-        .sub-image-box:focus-within {
-            border-color: #28a745;
-            background-color: #f4fbf6;
-        }
 
-        /* 画像操作 */
         .image-ctrl {
             display: flex;
             flex-direction: column;
             gap: 5px;
             margin-top: 5px;
         }
-        @media (min-width: 400px) {
-            .image-ctrl {
-                flex-direction: row;
-                align-items: center;
-                gap: 8px;
-            }
-        }
-        input[type="file"] {
-            width: 100%;
-            font-size: 11px;
-        }
+        input[type="file"] { width: 100%; font-size: 11px; }
         .btn-clear {
             padding: 4px 8px;
             background-color: #dc3545;
@@ -198,10 +179,6 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 11px;
-            white-space: nowrap;
-        }
-        .btn-clear:hover {
-            background-color: #bd2130;
         }
 
         /* 右側：出力エリア */
@@ -212,14 +189,80 @@
             align-items: center;
         }
 
-        /* 画像化エリア本体 */
-        #capture-area {
+        /* パワポ風編集ツールバー */
+        .drawing-toolbar {
             width: 550px;
             max-width: 100%;
+            background: #f1f3f5;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            padding: 12px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-radius: 8px 8px 0 0;
+        }
+        .toolbar-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        .toolbar-label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #495057;
+            white-space: nowrap;
+        }
+        .btn-tool {
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            background: white;
+            border: 1px solid #adb5bd;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .btn-tool:hover { background: #e9ecef; }
+        
+        .tool-color {
+            width: 45px;
+            height: 25px;
+            padding: 0;
+            border: 1px solid #adb5bd;
+            cursor: pointer;
+            background: none;
+        }
+        .tool-number {
+            width: 50px;
+            padding: 3px;
+            font-size: 12px;
+            border: 1px solid #adb5bd;
+            border-radius: 4px;
+            text-align: center;
+        }
+        /* 透明度調整スライダー用CSS */
+        .tool-range {
+            width: 70px;
+            cursor: pointer;
+        }
+
+        /* 画像化エリアの外枠 */
+        .capture-wrapper {
+            position: relative;
+            width: 550px;
+            max-width: 100%;
+        }
+
+        /* 画像化エリア本体 */
+        #capture-area {
+            width: 100%;
             background: white;
             border: 1px solid #ccc;
             box-sizing: border-box;
             display: grid;
+            position: relative;
         }
 
         /* マスのデザイン */
@@ -246,7 +289,7 @@
             justify-content: center;
             font-size: 12px;
             font-weight: bold;
-            z-index: 10;
+            z-index: 5;
         }
         
         .card-text {
@@ -258,18 +301,8 @@
             white-space: pre-wrap;
         }
         
-        /* 内部画像用の可変ミニグリッド */
-        .multi-img-grid {
-            display: grid;
-            gap: 4px;
-            width: 100%;
-        }
-        
-        .has-images {
-            margin-top: 10px;
-        }
-
-        /* 枚数ごとのグリッドルール */
+        .multi-img-grid { display: grid; gap: 4px; width: 100%; }
+        .has-images { margin-top: 10px; }
         .img-count-1 { grid-template-columns: 1fr; }
         .img-count-2 { grid-template-columns: repeat(2, 1fr); }
         .img-count-3, .img-count-4 { grid-template-columns: repeat(2, 1fr); }
@@ -287,12 +320,52 @@
         .img-count-2 .multi-img-box { min-height: 140px; }
         .img-count-3 .multi-img-box, .img-count-4 .multi-img-box { min-height: 120px; }
 
-        .card-img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
+        .card-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        /* 自由に配置できるオブジェクト */
+        .movable-object {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
         }
-        
+        .movable-object.selected { outline: 2px dashed #007bff; }
+        .obj-delete-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 18px;
+            height: 18px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            font-size: 10px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            z-index: 15;
+        }
+        .movable-object.selected .obj-delete-btn { display: flex; }
+        .obj-resize-handle {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            background: #007bff;
+            cursor: se-resize;
+            display: none;
+            z-index: 15;
+        }
+        .movable-object.selected .obj-resize-handle { display: block; }
+
         /* ダウンロードボタン */
         .btn-download {
             margin-top: 20px;
@@ -306,18 +379,8 @@
             width: 100%;
             max-width: 300px;
         }
-        .btn-download:hover {
-            background-color: #218838;
-        }
-
-        /* 免責事項の注記 */
-        .notice {
-            margin-top: 15px;
-            font-size: 11px;
-            color: #888;
-            text-align: center;
-            max-width: 500px;
-        }
+        .btn-download:hover { background-color: #218838; }
+        .notice { margin-top: 15px; font-size: 11px; color: #888; text-align: center; max-width: 500px; }
     </style>
 </head>
 <body>
@@ -343,9 +406,37 @@
 
     <div class="preview-side">
         <h2>出力プレビュー</h2>
-        
-        <div id="capture-area">
+
+        <div class="drawing-toolbar">
+            <div class="toolbar-row">
+                <span class="toolbar-label">図形追加:</span>
+                <button class="btn-tool" id="tool-add-rect">■ 四角</button>
+                <button class="btn-tool" id="tool-add-circle">● 丸</button>
+                <button class="btn-tool" id="tool-add-text">Ｔ テキスト</button>
             </div>
+            <div class="toolbar-row" style="border-top: 1px dashed #ccc; padding-top: 8px;">
+                <span class="toolbar-label">🎨 選択中の変更:</span>
+                
+                <span class="toolbar-label">塗り:</span>
+                <input type="color" class="tool-color" id="prop-bg-color" value="#ff0000">
+                
+                <span class="toolbar-label" style="margin-left:2px;">不透明度:</span>
+                <input type="range" class="tool-range" id="prop-opacity" min="0" max="100" value="100">
+                <span id="prop-opacity-val" style="font-size:11px; min-width:30px;">100%</span>
+                
+                <span class="toolbar-label" style="margin-left:5px;">枠線:</span>
+                <input type="color" class="tool-color" id="prop-border-color" value="#000000">
+                <input type="number" class="tool-number" id="prop-border-width" value="0" min="0" max="10">px
+                
+                <span class="toolbar-label" style="margin-left:5px;">文字サイズ:</span>
+                <input type="number" class="tool-number" id="prop-font-size" value="16" min="10" max="100">px
+            </div>
+        </div>
+        
+        <div class="capture-wrapper">
+            <div id="capture-area">
+                </div>
+        </div>
 
         <button class="btn-download" id="download-btn">画像をダウンロード</button>
         
@@ -361,14 +452,12 @@
     
     let currentBlockCount = 0;
     const imagesPerCard = 4;
-    // ★レイアウトモード状態 ( 'auto' = 自動, 'col1' = 縦1列強制 )
     let currentLayoutMode = 'auto'; 
 
     function createNewBlock() {
         currentBlockCount++;
         const i = currentBlockCount;
 
-        // 入力フォーム生成
         let subImagesHTML = '';
         for (let sub = 1; sub <= imagesPerCard; sub++) {
             subImagesHTML += `
@@ -394,7 +483,6 @@
             </div>`;
         allFormsContainer.insertAdjacentHTML('beforeend', formGroupHTML);
 
-        // プレビューカード生成
         const cardHTML = `
             <div class="card" id="preview-card-${i}">
                 <div class="card-number">${i}</div>
@@ -403,7 +491,6 @@
             </div>`;
         captureArea.insertAdjacentHTML('beforeend', cardHTML);
 
-        // イベント登録
         const textInput = document.getElementById(`input-text-${i}`);
         const textPreview = document.getElementById(`preview-text-${i}`);
         const fontSizeInput = document.getElementById(`input-font-size-${i}`);
@@ -493,17 +580,12 @@
         updateLayout();
     }
 
-    // ★並び方の配置計算をアップデート
     function updateLayout() {
         const count = currentBlockCount;
-        
-        // 「縦1列」モードが選ばれている場合は、コンテンツ数に関わらず常に縦1列にする
         if (currentLayoutMode === 'col1') {
             captureArea.style.gridTemplateColumns = "1fr";
             return;
         }
-
-        // 以下は「自動おまかせ」モードの時のロジック
         if (count === 1 || count === 2) {
             captureArea.style.gridTemplateColumns = "1fr";
         } else if (count === 3 || count === 4) {
@@ -513,7 +595,6 @@
         }
     }
 
-    // ★レイアウト切り替えボタンのイベント登録
     const btnCol1 = document.getElementById('layout-col1');
     const btnAuto = document.getElementById('layout-auto');
 
@@ -538,10 +619,246 @@
     document.getElementById('add-block-btn').addEventListener('click', createNewBlock);
     document.getElementById('remove-block-btn').addEventListener('click', removeLastBlock);
 
+
+    // ==========================================
+    // オブジェクト個別プロパティの編集ロジック
+    // ==========================================
+    const propBgColor = document.getElementById('prop-bg-color');
+    const propBorderColor = document.getElementById('prop-border-color');
+    const propBorderWidth = document.getElementById('prop-border-width');
+    const propFontSize = document.getElementById('prop-font-size');
+    
+    // ★透明度調整用の要素
+    const propOpacity = document.getElementById('prop-opacity');
+    const propOpacityVal = document.getElementById('prop-opacity-val');
+    
+    let selectedObj = null;
+
+    function rgbToHex(rgb) {
+        if (!rgb || rgb === 'transparent') return '#ffffff';
+        const result = rgb.match(/\d+/g);
+        if (!result) return '#ffffff';
+        return "#" + result.slice(0,3).map(x => {
+            const hex = parseInt(x).toString(16);
+            return hex.length === 1 ? "0" + hex : hex;
+        }).join("");
+    }
+
+    // 選択解除
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.movable-object') && !e.target.closest('.drawing-toolbar')) {
+            if (selectedObj) {
+                selectedObj.classList.remove('selected');
+                selectedObj = null;
+            }
+        }
+    });
+
+    // 変更のリアルタイム反映
+    propBgColor.addEventListener('input', () => {
+        if (!selectedObj) return;
+        if (selectedObj.dataset.type === 'text') {
+            const input = selectedObj.querySelector('input');
+            if (input) input.style.color = propBgColor.value;
+        } else {
+            selectedObj.style.backgroundColor = propBgColor.value;
+        }
+    });
+
+    // ★透明度スライダーのイベント
+    propOpacity.addEventListener('input', () => {
+        if (!selectedObj) return;
+        const opacityVal = propOpacity.value;
+        selectedObj.style.opacity = opacityVal / 100;
+        propOpacityVal.textContent = opacityVal + '%';
+    });
+
+    propBorderColor.addEventListener('input', () => {
+        if (!selectedObj) return;
+        selectedObj.style.borderColor = propBorderColor.value;
+    });
+
+    propBorderWidth.addEventListener('input', () => {
+        if (!selectedObj) return;
+        selectedObj.style.borderWidth = propBorderWidth.value + 'px';
+        selectedObj.style.borderStyle = propBorderWidth.value > 0 ? 'solid' : 'none';
+    });
+
+    propFontSize.addEventListener('input', () => {
+        if (!selectedObj || selectedObj.dataset.type !== 'text') return;
+        const input = selectedObj.querySelector('input');
+        if (input) input.style.fontSize = propFontSize.value + 'px';
+    });
+
+    // ドラッグ＆選択処理のセット
+    function makeObjectMovable(obj) {
+        obj.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (selectedObj) selectedObj.classList.remove('selected');
+            selectedObj = obj;
+            obj.classList.add('selected');
+
+            // ツールバーと選択中のオブジェクト状態を同期
+            if (obj.dataset.type === 'text') {
+                const input = obj.querySelector('input');
+                propBgColor.value = rgbToHex(input.style.color);
+                propFontSize.value = parseInt(input.style.fontSize) || 16;
+            } else {
+                propBgColor.value = rgbToHex(obj.style.backgroundColor);
+            }
+            propBorderColor.value = rgbToHex(obj.style.borderColor);
+            propBorderWidth.value = parseInt(obj.style.borderWidth) || 0;
+            
+            // ★透明度の状態もツールバーに同期
+            const currentOpacity = Math.round((obj.style.opacity !== "" ? parseFloat(obj.style.opacity) : 1) * 100);
+            propOpacity.value = currentOpacity;
+            propOpacityVal.textContent = currentOpacity + '%';
+        });
+
+        // ドラッグ移動
+        obj.addEventListener('mousedown', (e) => {
+            if (e.target.classList.contains('obj-resize-handle') || e.target.classList.contains('obj-delete-btn') || e.target.tagName === 'INPUT') return;
+            e.stopPropagation();
+            
+            if (selectedObj) selectedObj.classList.remove('selected');
+            selectedObj = obj;
+            obj.classList.add('selected');
+
+            const rect = obj.getBoundingClientRect();
+            const parentRect = captureArea.getBoundingClientRect();
+            
+            let offsetX = e.clientX - rect.left;
+            let offsetY = e.clientY - rect.top;
+
+            function mouseMoveHandler(e) {
+                let x = e.clientX - parentRect.left - offsetX;
+                let y = e.clientY - parentRect.top - offsetY;
+                x = Math.max(0, Math.min(x, parentRect.width - obj.offsetWidth));
+                y = Math.max(0, Math.min(y, parentRect.height - obj.offsetHeight));
+                obj.style.left = x + 'px';
+                obj.style.top = y + 'px';
+            }
+
+            function mouseUpHandler() {
+                document.removeEventListener('mousemove', mouseMoveHandler);
+                document.removeEventListener('mouseup', mouseUpHandler);
+            }
+            document.addEventListener('mousemove', mouseMoveHandler);
+            document.addEventListener('mouseup', mouseUpHandler);
+        });
+
+        // リサイズ
+        const handle = obj.querySelector('.obj-resize-handle');
+        handle.addEventListener('mousedown', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            let startWidth = obj.offsetWidth;
+            let startHeight = obj.offsetHeight;
+            let startX = e.clientX;
+            let startY = e.clientY;
+
+            function mouseMoveResize(e) {
+                let newWidth = startWidth + (e.clientX - startX);
+                let newHeight = startHeight + (e.clientY - startY);
+                obj.style.width = Math.max(30, newWidth) + 'px';
+                obj.style.height = Math.max(20, newHeight) + 'px';
+            }
+            function mouseUpResize() {
+                document.removeEventListener('mousemove', mouseMoveResize);
+                document.removeEventListener('mouseup', mouseUpResize);
+            }
+            document.addEventListener('mousemove', mouseMoveResize);
+            document.addEventListener('mouseup', mouseUpResize);
+        });
+
+        // 削除
+        obj.querySelector('.obj-delete-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            obj.remove();
+            selectedObj = null;
+        });
+    }
+
+    // 四角の追加（★初期値をopacity: 1に変更）
+    document.getElementById('tool-add-rect').addEventListener('click', () => {
+        const obj = document.createElement('div');
+        obj.className = 'movable-object';
+        obj.dataset.type = 'rect';
+        obj.style.width = '100px';
+        obj.style.height = '60px';
+        obj.style.left = '40px';
+        obj.style.top = '40px';
+        obj.style.backgroundColor = '#ff0000';
+        obj.style.border = '0px solid #000000';
+        obj.style.opacity = '1';
+
+        obj.innerHTML = `<button class="obj-delete-btn">×</button><div class="obj-resize-handle"></div>`;
+        captureArea.appendChild(obj);
+        makeObjectMovable(obj);
+        obj.click();
+    });
+
+    // 丸の追加（★初期値をopacity: 1に変更）
+    document.getElementById('tool-add-circle').addEventListener('click', () => {
+        const obj = document.createElement('div');
+        obj.className = 'movable-object';
+        obj.dataset.type = 'circle';
+        obj.style.width = '80px';
+        obj.style.height = '80px';
+        obj.style.left = '40px';
+        obj.style.top = '40px';
+        obj.style.backgroundColor = '#ff0000';
+        obj.style.border = '0px solid #000000';
+        obj.style.borderRadius = '50%';
+        obj.style.opacity = '1';
+
+        obj.innerHTML = `<button class="obj-delete-btn">×</button><div class="obj-resize-handle"></div>`;
+        captureArea.appendChild(obj);
+        makeObjectMovable(obj);
+        obj.click();
+    });
+
+    // テキストの追加
+    document.getElementById('tool-add-text').addEventListener('click', () => {
+        const obj = document.createElement('div');
+        obj.className = 'movable-object';
+        obj.dataset.type = 'text';
+        obj.style.width = '150px';
+        obj.style.height = '40px';
+        obj.style.left = '40px';
+        obj.style.top = '40px';
+        obj.style.opacity = '1';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = 'テキスト入力';
+        input.style.width = '100%';
+        input.style.border = 'none';
+        input.style.background = 'transparent';
+        input.style.fontSize = '16px';
+        input.style.fontWeight = 'bold';
+        input.style.color = '#ff0000';
+
+        obj.innerHTML = `<button class="obj-delete-btn">×</button><div class="obj-resize-handle"></div>`;
+        obj.insertBefore(input, obj.firstChild);
+        
+        captureArea.appendChild(obj);
+        makeObjectMovable(obj);
+        obj.click();
+        input.focus();
+    });
+
+
     // ダウンロード処理
     document.getElementById('download-btn').addEventListener('click', () => {
+        if (selectedObj) selectedObj.classList.remove('selected');
         const numbers = document.querySelectorAll('.card-number');
+        const deleteBtns = document.querySelectorAll('.obj-delete-btn');
+        const handles = document.querySelectorAll('.obj-resize-handle');
+        
         numbers.forEach(el => el.style.opacity = '0');
+        deleteBtns.forEach(el => el.style.display = 'none');
+        handles.forEach(el => el.style.display = 'none');
         
         html2canvas(captureArea, { 
             useCORS: true,
